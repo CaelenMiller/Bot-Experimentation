@@ -6,3 +6,7 @@ To make this work you need an API key. Just make a file called APIkey.py and pla
     import openai
     openai.organization = "ORGANIZATION NAME"
     openai.api_key = "API KEY"
+
+
+Some ideas for future development - 
+* Save each version of the file as they are created.

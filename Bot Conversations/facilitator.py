@@ -38,7 +38,9 @@ class Hub():
             iteration += 1
             print(f'Beginning iteration {iteration}')
             r1 = person1.generate_response(r2, person2.name)
+            print(r1)
             r2 = person2.generate_response(r1, person1.name)
+            print(r2)
 
         if to_longterm:
             person1.convo_to_longterm(person2.name)

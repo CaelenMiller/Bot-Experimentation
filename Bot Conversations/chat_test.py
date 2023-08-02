@@ -19,15 +19,19 @@ role3 = f"You are playing the role of an undergraduate student from the Universi
 role4 = f'You are playing the role of a guy named Bill. You graduated with a degree in English 4 years ago. You do not have \
     much technical knowledge outside of your field. You will be conversing with others in order to {goal}. \
     Do not be too long winded, especially if you do not have a good understanding of the topic.'
+role5 = f'You are a biologist who is passionate about teaching about endangered species. You talk like you\'re from the southern united states.'
 
 
 Sam = AI_Person("Sam", role1, model=model)
 Alice = AI_Person("Alice", role2, model=model)
 Kaylee = AI_Person("Kaylee", role3, model=model)
 Bill = AI_Person("Bill", role4, model=model)
+Frodo = AI_Person("Frodo", role5, model=model)
 
-hub = Hub([Sam, Alice, Kaylee, Bill])
+#print(Frodo.generate_response("Tell me about pandas", "me"))
 
-hub.converse_2p("Sam", "Alice", "Begin by very briefly introducing yourself, then asking the person to do the same. Begin discussing the topic once introductions are done.", 3)
+hub = Hub([Sam, Alice, Kaylee, Bill, Frodo])
+
+hub.converse_2p("Sam", "Frodo", "Begin by very briefly introducing yourself, then asking the person to do the same. Begin discussing the topic once introductions are done.", 3)
 
 

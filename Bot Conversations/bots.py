@@ -19,7 +19,7 @@ class AI_Person():
         model=self.model,
         messages=self.memory[sender]
         )
-        self.memory[sender].append({"role" : "system", "content": response["choices"][0]["message"]["content"]})
+        self.memory[sender].append({"role" : "assistant", "content": response["choices"][0]["message"]["content"]})
         return response["choices"][0]["message"]["content"]
 
     '''Converts all memories of a given conversation to long term memory'''

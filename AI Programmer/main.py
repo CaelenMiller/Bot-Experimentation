@@ -11,9 +11,14 @@ def iterative_development(core_context, label, max_itr=5):
 
     #Perform loop
     for i in range(max_itr):
-        AI.generate_response(label, "Continue refining the code, or if it works well request that the user provide more guidence. This guidance can take the form of additional features, or better fleshing out of current systems.")
+        AI.generate_response(label, "")
     AI.write_memory(label=label)
 
-core_context = "Your purpose is to write python code for me. Use the provided functions to write the code, get additional user input, or declare that you are done. Focus on using the functions provided, preferablly even using them to interact with the user. Code will only be used if it is written into a function call."
+core_context = "Your purpose is to write python code for me. Use the provided functions to write the code, get additional user input, or declare that you are done. Focus on using the functions provided to interact with the user. Code will only be used if it is written into a function call. Initially it is ok to just stub out code, but do not allow infinite loops."
 
 iterative_development(core_context, label="test1")
+
+
+
+#Initializing message
+#At each iteration, show the AI 1) the current code, and 2) the output of the code. 

@@ -4,7 +4,7 @@ from BotIDE import get_user_input, write_code, finish_programming
 
 
 class AI_Programmer():
-    def __init__(self, core_context, model="gpt-3.5-turbo-0613"):
+    def __init__(self, core_context, model="gpt-3.5-turbo-16k-0613"):
         self.core_context = core_context
         self.model = model
         self.memory = {} #Allows the bot to see the entire conversation so far
@@ -21,7 +21,7 @@ class AI_Programmer():
         functions=[
             {
                 "name": "get_user_input",
-                "description": "Request that the user input.",
+                "description": "Request for user input.",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -47,7 +47,7 @@ class AI_Programmer():
             },
             {
                 "name": "finish_programming",
-                "description": "Run this to declare that the code is tested and ready to use.",
+                "description": "Run this to declare that the code is tested and ready to use, and that no more input will be needed from the user.",
                 "parameters": {
                     "type": "object",
                     "properties": {    },
@@ -56,8 +56,7 @@ class AI_Programmer():
         ],
         function_call="auto"
         )
-        print("saving content")
-        self.memory[label].append({"role" : "system", "content": response["choices"][0]["message"]["content"]})
+        self.memory[label].append({"role" : "assistant", "content": response["choices"][0]["message"]["content"]})
 
         response = self.handle_functions(response["choices"][0]["message"], label)
 
@@ -100,7 +99,10 @@ class AI_Programmer():
                 model="gpt-3.5-turbo-0613",
                 messages=self.memory[label],
             )  # get a new response from GPT where it can see the function response
-            return second_response
+            self.memory[label].append(second_response)
+        else:
+            print(f'{response}'[:100])
+
 
 
     def write_memory(self, label):

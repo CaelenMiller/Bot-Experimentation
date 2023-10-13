@@ -22,6 +22,9 @@ import pyttsx3
     # Have tags attached to each memory. AI is allowed to generate additional tags. Tags are only the most important
         # aspects of a memory, such as names and key concepts. 
 
+
+    # Assign an embedding as the key to all memories
+
 class AI_Assistant():
     def __init__(self, core_context, personality_context, verbal=False, model_weak="gpt-3.5-turbo-16k-0613", model_strong="gpt-3.5-turbo-16k-0613"):
         self.core_context = core_context

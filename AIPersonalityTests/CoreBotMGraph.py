@@ -2,9 +2,9 @@ import openai
 import json
 import os
 import pyttsx3
-import Memory_Tools
+import Memory_Tools_2
 
-'''Here is the overall flow of the AI assitant in the current iteration.
+'''Here is the overall flow of the AI assistant in the current iteration.
     * Assistants short term memory is initialized using its core context message
         * Input is accepted from the user. 
         * The assistant searches long term memory for relevant memories
@@ -30,7 +30,7 @@ class AI_Assistant():
         self.personality_context = personality_context
         self.model_weak = model_weak
         self.model_strong = model_strong
-        self.ltmemory_graph = Memory_Tools.Memory_Graph()
+        self.ltmemory_graph = Memory_Tools_2.Memory_Graph()
         self.begin_conversation()
         self.remembered_memories = []
         self.verbal = verbal
@@ -68,6 +68,7 @@ class AI_Assistant():
 
     #searches through all memories to determine which ones may be relevant
     def remember_ltmemories(self):
+        #TODO - FIX THIS TO WORK WITH NEW SYSTEM
         similarities = self.ltmemory_graph.process_input(self.stmemory[-1]["content"])
         unremembered_memories = self.ltmemory_graph.process_similarities(similarities)
             
@@ -79,19 +80,7 @@ class AI_Assistant():
             model=self.model_weak,
             messages=self.stmemory,
             functions=[
-                {
-                    "name": "recall_memories",
-                    "description": "Recall memories that are or could be relevant to the current conversation.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "label": {
-                                "type": "string",
-                                "description": "A label for the most relevant memory",
-                            },
-                        },
-                    },
-                }]
+                ]
             )
         
     #Injects a system message onto the end of the conversation and prompts a response
@@ -133,31 +122,30 @@ class AI_Assistant():
     def finish_conversation(self):
         print("Ending conversation")
 
-        #Have LLM summarize conversation
-        #Perform NER to extract key entities from the summary of the conversation
-        #Decide which entities are important
-            #Term frequency
-            #Embeddings? Words vs paragraph comparison
-            #
-        #Make summaries for each important entity using the full conversation
-
-
-
-
-        #TODO - For initial testing, do not allow for creation of new memory tags. Only accessing
-
-        # similarities = self.ltmemory_graph.process_input(self.stmemory[-1]["content"])
-        # related_memories = self.ltmemory_graph.process_similarities(similarities)
-            
+        #summarize the key ideas using the LLM
+        prompt = "In a single paragraph, summarize the information that you gleaned from this conversation for future use. Do not include anything that you would already inherently understand as an AI."
+        self.stmemory.append({"role": "system", "content": f'{prompt}'})
+        summary = openai.ChatCompletion.create(
+        model=self.model_weak,
+        messages=self.stmemory)
+        print(summary)
         
-        # temp = []
-        # temp.append({"role": "system", "content": f"Which of these best matches this memory? {related_memories}"})
-        # closest = openai.ChatCompletion.create(
-        # model=self.model_weak,
-        # messages=self.stmemory)
+        #Have LLM create a one sentence summary of the full summary
+        summary_label = openai.ChatCompletion.create(
+            model=self.model_strong,
+            messages=[{"role" : "assistant", "content": summary}]
+        )
 
-        # self.ltmemory_graph.add_node(memory_label, memory_content["choices"][0]["message"]["content"])
+        #Create conversation node with sentence summary as key and full summary as value 
+        self.ltmemory_graph.add_node("Conversation", summary_label, summary)
 
+        #Have the LLM output the key entities (Unique people, object, events). 
+        #For each of those entities: (worried that this part will take too much processing power, maybe limit the number of entities? only k most important ones?)
+            #Create or update their node (requires additional LLM call for each node)
+            #Make an edge between that entities node and the conversation node.
+
+    #TODO - use this to determine how many times the LLM was called, as well as the total token length
+    #def use_strong_model(self, )
 
     def speak(self, message):
         print("speaking")
@@ -171,5 +159,32 @@ class AI_Assistant():
         return self.stmemory[label]
         
 
+
+#Problem - Making an AI with the following attributes:
+#   - The ability to remember key details from past interactions
+#          - Saving key details of past conversations
+#          - Accessing these key details at the right moment, injecting them into a conversation.
+#
+
+#Approaches - 
+
+#---Embedding Space---
+#   Saving to long term memory:
+#       Make a one paragraph summary of the conversation using an LLM (most likely GPT-3.5-Turbo)
+#       Make an embedding of the paragraph using a transformers encoder 
+#       Store memories in the embedding space (In a dictionary)
+#   Accessing long term memory:
+#       Make an encoding of the previous user response
+#       Find k nearest encodings in the embedding space
+#       Insert latest question and K nearest 
+#Problems
+#   How will this work for accessing information about specific people?
+
+#---Named Entity Recognition---
+#   Saving to long term memory:
+#       Create a summary of the conversation using the LLM
+#       Perform NER on the summary
+#       
+#   Accessing long term memory:
 
 

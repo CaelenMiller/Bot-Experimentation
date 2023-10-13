@@ -1,7 +1,6 @@
 from collections import defaultdict
 import re
 from nltk.corpus import stopwords
-import nltk
 from collections import Counter
 import math
 

@@ -50,14 +50,15 @@ class Bot:
 
     #Compacts st memory into summary, then adds it to lt memory. Optionally wipes st memory
     def to_lt_memory(self, clear_st=True):
-        summary = self.respond_to_input("Write a short paragraph summary of this entire conversation, focusing on key details you would like to remember for later.", "system")
-        self.lt_memory.add_memory(summary)
-        if clear_st:
-            self.wipe_st()
+        if len(self.st_memory) > 1:
+            summary = self.respond_to_input("Write a short paragraph summary of this entire conversation, focusing on key details you would like to remember for later.", "system")
+            self.lt_memory.add_memory(summary)
+            if clear_st:
+                self.wipe_st()
 
     #Fetches a string summary from lt memory based on the input embedding
     def recall(self):
-        print("recalling memory")
+        print("relevance found - recalling memory")
         self.seen_memories.append(self.current_embedding)
         return self.lt_memory.access_memory(self.current_embedding)
     

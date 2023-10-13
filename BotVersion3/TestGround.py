@@ -1,6 +1,7 @@
 from BotMemory import *
 from BotFront import *
 from APIkey import *
+from GUI import *
 
 def lt_basic_tests():
     ltMem = LTMemory_System()
@@ -47,8 +48,11 @@ def converse_debug(test_bot):
         test_bot.to_lt_memory()
         
 
-Bill = Bot("Bill", "You are to pretend that you are Bill. You are politically moderate. Act like a person would, rather than an AI model. Do not reveal that you are an AI model. You are in an online chat room, so respond briefly.")
-converse_debug(Bill)
+Bill = Bot("Bill", "You are to pretend that you are Bill. Your goal is to amuse yourself. You are politically left leaning. Act like a person would, rather than an AI model. Do not reveal that you are an AI model. You are in an online chat room, so respond briefly.")
+gui = ChatGUI(Bill)
+gui.mainloop()
+
+#converse_debug(Bill)
 
     #Debug ideas
     # - Check if it stays in character with weird input

@@ -52,7 +52,7 @@ class LTMemory_System():
         output = ""
         for key, value in self.lt_memory.items():
             output += f"{key}: {value}\n"
-    
+        return output
 
 
         

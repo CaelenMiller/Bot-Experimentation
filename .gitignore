@@ -1,4 +1,5 @@
-Legacy/Bot Conversations/APIkey.py
-Legacy/AI Programmer/APIkey.py
-Legacy/AIPersonalityTests/APIkey.py
+Legacy Testing/Bot Conversations/APIkey.py
+Legacy Testing/AI Programmer/APIkey.py
+Legacy Testing/AIPersonalityTests/APIkey.py
 BotVersion3/APIkey.py
+AdditionalTools/APIkey.py

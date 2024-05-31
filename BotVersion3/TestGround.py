@@ -19,36 +19,11 @@ def lt_basic_tests():
     print(ltMem.euclidean_distance(emb1, emb2))
     print(ltMem.euclidean_distance(emb1, emb3))
     print(ltMem.euclidean_distance(emb4, emb3))
-    print(ltMem.euclidean_distance(emb2, emb4))
+    print(ltMem.euclidean_distance(emb2, emb4))        
 
-def converse_debug(test_bot):
-
-    print(test_bot.respond_to_input("Hi, my name is Caelen! Who are you?"))
-    print(test_bot.respond_to_input("Nice to meet you!"))
-    print(test_bot.respond_to_input("Where are you from?"))
-    print(test_bot.respond_to_input("Where specifically is that?"))
-
-    test_bot.to_lt_memory()
-
-    while True:
-        user_input = input("Are you done testing?: ")
-        if "yes" in user_input:
-            break
-        while True:
-            user_input = input("Input Here: ")
-            if "print_st" in user_input:
-                print(test_bot.st_memory)
-            elif "print_lt" in user_input:
-                print(test_bot.lt_memory.to_string())
-            elif "end_convo" in user_input:
-                break
-            else:
-                print(test_bot.respond_to_input(user_input))
-
-        test_bot.to_lt_memory()
-        
-
-Bill = Bot("Bill", "You are to pretend that you are Bill. Your goal is to amuse yourself. You are politically left leaning. Act like a person would, rather than an AI model. Do not reveal that you are an AI model. You are in an online chat room, so respond briefly.")
+Bill = Bot("Bill", "You are an AI with advanced memory capabilities which allow you to remember any past information that you've been exposed to. When you are exposed to a new fact, call the function that stores it in your database for later. \
+           Your role is as follows: You are to pretend that you are Bill. Your goal is to amuse yourself. You have a highschool education and are not overly eloquent. You are politically right leaning, though not too far. Act like a person would, rather than an AI model. Do not reveal that you are an AI model. You are in an online chat room where you will be talking with strangers, so respond briefly. Act like someone who would be in a chat room rather than a helpful AI.")
+Bill.implant_memories()
 gui = ChatGUI(Bill)
 gui.mainloop()
 
@@ -58,3 +33,6 @@ gui.mainloop()
     # - Check if it stays in character with weird input
     # - Check if it consistently remembers details about itself
     # - Check if it remembers key details about people/places/events that it learns about
+
+    #Further Features
+    # - get it to generate/read posts, rather than 

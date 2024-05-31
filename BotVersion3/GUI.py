@@ -5,6 +5,7 @@ class ChatGUI(tk.Tk):
     def __init__(self, bot):
         super().__init__()
 
+        print("Initializing GUI")
         self.title("Chat GUI")
 
         # Blue area: Chatbox with a scrolling feature
@@ -31,11 +32,14 @@ class ChatGUI(tk.Tk):
         self.button1 = tk.Button(self.button_frame, text="End Chat", command=self.end_convo)
         self.button1.pack(side=tk.LEFT, padx=5)
 
-        self.button2 = tk.Button(self.button_frame, text="Button 2", command=self.some_function)
+        self.button2 = tk.Button(self.button_frame, text="Print Memory", command=self.print_st_memory)
         self.button2.pack(side=tk.LEFT, padx=5)
 
-        self.button3 = tk.Button(self.button_frame, text="Button 3", command=self.some_function)
+        self.button3 = tk.Button(self.button_frame, text="Implant Memory", command=self.implant_memory)
         self.button3.pack(side=tk.LEFT, padx=5)
+
+        self.button4 = tk.Button(self.button_frame, text="Print Stats", command=self.print_stats)
+        self.button4.pack(side=tk.LEFT, padx=5)
 
         # Info printed out below the red buttons
         self.info_label = tk.Label(self, text="Information will be printed here.")
@@ -73,12 +77,25 @@ class ChatGUI(tk.Tk):
         self.info_label.config(text="A button was pressed!")
 
     def end_convo(self):
-        self.bot.to_lt_memory()
+        if len(self.bot.st_memory) > 1:
+            self.bot.to_lt_memory()
 
-        self.chatbox.config(state=tk.NORMAL)  # Make the chatbox editable
-        self.chatbox.delete(1.0, tk.END)      # Delete all content from the chatbox
-        self.chatbox.config(state=tk.DISABLED)  # Make the chatbox non-editable again
+            self.chatbox.config(state=tk.NORMAL)  # Make the chatbox editable
+            self.chatbox.delete(1.0, tk.END)      # Delete all content from the chatbox
+            self.chatbox.config(state=tk.DISABLED)  # Make the chatbox non-editable again
 
-if __name__ == "__main__":
-    app = ChatGUI()
-    app.mainloop()
+    def print_st_memory(self):
+        # Example function. You can modify this to do whatever you want.
+        print(self.bot.st_memory)
+
+    def implant_memory(self):
+        message = self.user_input.get()
+        if not message.strip():
+            return  # Do nothing if the message is empty
+        self.user_input.delete(0, tk.END)
+
+        self.bot.implant_memory(message)
+
+    def print_stats(self):
+        print(f'API Calls: {self.bot.API_calls}')
+        print(f'Total Tokens: {self.bot.tokens}')

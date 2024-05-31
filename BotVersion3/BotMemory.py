@@ -3,38 +3,41 @@ embeddings as the keys and summaries as the values. When searching for a memory,
 an embedding is generated. The system then returns the n most similar summaries that are within a range and
 have not been used in the current conversation."""
 
-from transformers import AutoTokenizer, AutoModel
+from sentence_transformers import SentenceTransformer
 import torch
 import numpy as np
 
 '''LT memory is essentially a dictionary that uses embeddings as keys and summaries as values.'''
 class LTMemory_System():
     def __init__(self):
-        self.tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-        self.model = AutoModel.from_pretrained("bert-base-uncased")
-        self.lt_memory = dict() #hash -> summary
-        self.keys = dict() #hash -> embedding
+        self.model = SentenceTransformer('bert-base-nli-mean-tokens')
         
-
+        self.lt_memory = dict() #tuple -> summary
+        
     def generate_embedding(self, doc_string): #input: document string, output: numerical embeddings
-        inputs = self.tokenizer(doc_string, padding=True, truncation=True, return_tensors="pt")
+        inputs = [doc_string]
         with torch.no_grad():
-            outputs = self.model(**inputs)
-        embeddings = outputs.last_hidden_state.mean(dim=1)
-        return np.array(embeddings)
+            outputs = self.model.encode(inputs)
+        output = outputs[0]
+        return tuple(output)
 
     def add_memory(self, summary): #input: summary string
         embedding = self.generate_embedding(summary)
-        hashed = hash(embedding.tostring())
-        self.lt_memory[hashed] = summary
-        self.keys[hashed] = embedding
+        self.lt_memory[embedding] = summary
 
-    def access_memory(self, embedding): #input: numerical embedding; output: summary
-        return self.lt_memory[hash(embedding.tostring())]
+    def access_memory(self, embedding): #input: embedding; output: summary
+        return self.lt_memory[embedding]
     
-    def get_closest_memories(self, embedding, k=3): #input: embedding; output: k closest summaries, k closest embeddings
+
+
+    def embedding_search(self, input, k=3, mode="embedding"): #input: embedding; output: k closest summaries, k closest embeddings
+        if mode=="embedding":
+            embedding = input
+        else:
+            embedding = self.generate_embedding(input)
+            
         distances = []
-        for i, embedding_2 in enumerate(self.keys.keys()):
+        for i, embedding_2 in enumerate(self.lt_memory.keys()):
             dist = self.euclidean_distance(embedding, embedding_2)
             distances.append((embedding_2, dist))
             
@@ -46,7 +49,7 @@ class LTMemory_System():
     
 
     def euclidean_distance(self, arr1, arr2):
-        return np.linalg.norm(arr1 - arr2)
+        return np.linalg.norm(np.array(arr1) - np.array(arr2))
     
     def to_string(self):
         output = ""

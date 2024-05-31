@@ -1,0 +1,1 @@
+The idea of this project is to provide the AI with an environment for performing active research. 
